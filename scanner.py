@@ -24,10 +24,7 @@ def sortSecond(val):
 
 class Scanner:
 
-
-
-
-    def run_scan(self):
+    def run_pairs_scan(self):
     
         # Get all the perps
 
