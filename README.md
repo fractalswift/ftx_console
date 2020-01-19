@@ -1,6 +1,5 @@
-ftx_console
 
-Suite of mini modules for working with FTX if you want to look for pair trades.
+Suite of mini modules for working with FTX if you want to look for pair trades. Simple command line interface.
 
 
 1. You can quickly check liquity across markets based on estimated slippage based on order books.
