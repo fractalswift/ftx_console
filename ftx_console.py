@@ -1,3 +1,8 @@
+
+print("")
+print("Please wait, importing data from FTX API")
+
+
 import ftx
 import markets
 import liquidity_monitor
@@ -9,6 +14,8 @@ from johansen import coint_johansen
 
 
 import pprint
+
+
 
 
 markets = markets.Markets()
