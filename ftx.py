@@ -12,8 +12,8 @@ class FtxClient:
 
     def __init__(self) -> None:
         self._session = Session()
-        self._api_key =  api_keys.api_key  # ADD YOUR OWN API KEY HERE
-        self._api_secret = api_keys.api_secret # ADD YOUR OWN API SECRET HERE
+        self._api_key =  "no key"  # ADD YOUR OWN API KEY HERE
+        self._api_secret = "no secret" # ADD YOUR OWN API SECRET HERE
         self._subaccount_name = 'Battle Royale'  # TODO: If using a subaccount, put its name here as a string
 
     def _get(self, path: str, params: Optional[Dict[str, Any]] = None) -> Any:

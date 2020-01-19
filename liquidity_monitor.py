@@ -1,19 +1,19 @@
 import pandas as pd
 import numpy as np
 import ftx
+import markets
+
+
+markets = markets.Markets()
 client = ftx.FtxClient()
 
-def get_liquidity(tolerable_slippage):
-    # Get the list of perp tickers
 
-    futures = pd.DataFrame(client.list_futures())
-    futures_list = futures.name.tolist()
-    only_perps = []
-    [only_perps.append(f) for f in futures_list if 'PERP' in f]
 
-    tickers = only_perps
+def get_liquidity(markets, tolerable_slippage):
+   
+   # Get the liquidity
 
-    # Get the liquidity
+    tickers = markets.only_perps
 
     pct = tolerable_slippage # tolerable slippage %
 
