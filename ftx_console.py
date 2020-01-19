@@ -8,6 +8,7 @@ import pprint
 
 
 markets = markets.Markets()
+scanner = scanner.Scanner()
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -26,7 +27,7 @@ if user_choice == 1:
 
     print("Sending API call - please wait approx 20 seconds")
 
-    liquidity = liquidity_monitor.get_liquidity(markets, 0.2)
+    liquidity = markets.get_liquidity(0.2)
 
     pp.pprint(liquidity)
     

@@ -22,92 +22,97 @@ def sortSecond(val):
     return val[1] 
 
 
-def run_scan():
-  
-    # Get all the perps
-
-    only_perps = markets.only_perps
-
-    # Remove btc and usdt 
-    only_perps.remove('BTC-PERP')
-    only_perps.remove('USDT-PERP')
-
-    # Get the data, and add it to a list with the data and the name of the data
-    hist_prices_list = []
-    [hist_prices_list.append([p, myClient.get_hist_futures(p, '3600')]) for p in only_perps]
-
-    #[hist_prices_list.append([f, myClient.get_hist_futures(f, '3600')]) for f in futures_list]
+class Scanner:
 
 
-    #Use the data to make a dataframe, and use the name to make a new column in the dataframe
 
-    hist_dfs = []
 
-    for hp in hist_prices_list:
-        
-        future_name = hp[0]
-        future_data = hp[1]
-        df = pd.DataFrame(future_data)
-        df['future_name'] = future_name
-        
-        hist_dfs.append(df)
-        
+    def run_scan(self):
+    
+        # Get all the perps
 
-    # Put them into an array with the name of the ratio pair, and then the df of it
+        only_perps = markets.only_perps
 
-    coint_dfs = []
+        # Remove btc and usdt 
+        only_perps.remove('BTC-PERP')
+        only_perps.remove('USDT-PERP')
 
-    for df in hist_dfs:
-        
-        
-        x_df = df
-        x_name = x_df['future_name'][0]
-        
+        # Get the data, and add it to a list with the data and the name of the data
+        hist_prices_list = []
+        [hist_prices_list.append([p, myClient.get_hist_futures(p, '3600')]) for p in only_perps]
+
+        #[hist_prices_list.append([f, myClient.get_hist_futures(f, '3600')]) for f in futures_list]
+
+
+        #Use the data to make a dataframe, and use the name to make a new column in the dataframe
+
+        hist_dfs = []
+
+        for hp in hist_prices_list:
+            
+            future_name = hp[0]
+            future_data = hp[1]
+            df = pd.DataFrame(future_data)
+            df['future_name'] = future_name
+            
+            hist_dfs.append(df)
+            
+
+        # Put them into an array with the name of the ratio pair, and then the df of it
+
+        coint_dfs = []
+
         for df in hist_dfs:
             
-            y_name = df['future_name'][0]
             
-            new_df = x_df.merge(df, on='startTime', how='inner')
+            x_df = df
+            x_name = x_df['future_name'][0]
             
-            
+            for df in hist_dfs:
+                
+                y_name = df['future_name'][0]
+                
+                new_df = x_df.merge(df, on='startTime', how='inner')
+                
+                
 
-            new_df = new_df[['close_x', 'close_y']]
-            
-            
-            name = f'{x_name}/{y_name}'
-            
-            row = [name, new_df]
-            
-            coint_dfs.append(row)
+                new_df = new_df[['close_x', 'close_y']]
+                
+                
+                name = f'{x_name}/{y_name}'
+                
+                row = [name, new_df]
+                
+                coint_dfs.append(row)
 
-            
+                
 
+                
+                
+                
             
-            
-            
-        
-            
-    diverged_pairs = []
+                
+        diverged_pairs = []
 
-    for row in coint_dfs:
-        
-        
-        row[1]['ratio'] = row[1].close_x / row[1].close_y
-        row[1]['sma'] = row[1].ratio.rolling(75).mean()
-        
-        dist_pct = ( abs(row[1]['ratio']  - row[1]['sma']) / row[1]['sma'] ) * 100
-        
-        max_dist = dist_pct[-500:-10].max()
-        
-        pct = ((row[1].ratio.iloc[-1] - row[1].sma.iloc[-1]) / row[1].sma.iloc[-1] )  * 100
-        
-    
-        
-        if pct > max_dist * 0.8:
+        for row in coint_dfs:
             
-
-            diverged_pairs.append([row[0], pct])
             
-            diverged_pairs.sort(key=sortSecond, reverse=True)
+            row[1]['ratio'] = row[1].close_x / row[1].close_y
+            row[1]['sma'] = row[1].ratio.rolling(75).mean()
+            
+            dist_pct = ( abs(row[1]['ratio']  - row[1]['sma']) / row[1]['sma'] ) * 100
+            
+            max_dist = dist_pct[-500:-10].max()
+            
+            pct = ((row[1].ratio.iloc[-1] - row[1].sma.iloc[-1]) / row[1].sma.iloc[-1] )  * 100
+            
+        
+            
+            if pct > max_dist * 0.8:
+                
 
-            return diverged_pairs
+                diverged_pairs.append([row[0], pct])
+                
+                diverged_pairs.sort(key=sortSecond, reverse=True)
+
+                return diverged_pairs
