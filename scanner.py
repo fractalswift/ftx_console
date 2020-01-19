@@ -8,6 +8,7 @@
 
 import ftx
 import markets
+import settings
 
 import pandas as pd
 import numpy as np
@@ -36,7 +37,7 @@ class Scanner:
 
         # Get the data, and add it to a list with the data and the name of the data
         hist_prices_list = []
-        [hist_prices_list.append([p, myClient.get_hist_futures(p, '3600')]) for p in only_perps]
+        [hist_prices_list.append([p, myClient.get_hist_futures(p, settings.candle_size)]) for p in only_perps]
 
         #[hist_prices_list.append([f, myClient.get_hist_futures(f, '3600')]) for f in futures_list]
 
@@ -82,12 +83,7 @@ class Scanner:
                 
                 coint_dfs.append(row)
 
-                
-
-                
-                
-                
-            
+                   
                 
         diverged_pairs = []
 
@@ -95,21 +91,23 @@ class Scanner:
             
             
             row[1]['ratio'] = row[1].close_x / row[1].close_y
-            row[1]['sma'] = row[1].ratio.rolling(75).mean()
+            row[1]['sma'] = row[1].ratio.rolling(settings.mean_lookback).mean()
             
             dist_pct = ( abs(row[1]['ratio']  - row[1]['sma']) / row[1]['sma'] ) * 100
             
-            max_dist = dist_pct[-500:-10].max()
+            max_dist = dist_pct[-settings.divergence_lookback:-10].max()
             
             pct = ((row[1].ratio.iloc[-1] - row[1].sma.iloc[-1]) / row[1].sma.iloc[-1] )  * 100
             
         
             
-            if pct > max_dist * 0.8:
+            if pct > max_dist * settings.divergence_percentile:
+
+                if pct > settings.minimum_pct_divergence:
                 
 
-                diverged_pairs.append([row[0], pct])
-                
-                diverged_pairs.sort(key=sortSecond, reverse=True)
+                    diverged_pairs.append([row[0], pct])
+                    
+                    diverged_pairs.sort(key=sortSecond, reverse=True)
 
-                return diverged_pairs
+                    return diverged_pairs
