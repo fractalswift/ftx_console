@@ -2,9 +2,9 @@
 Suite of mini modules for working with FTX if you want to look for pair trades. Simple command line interface.
 
 
-1. You can quickly check liquity across markets based on estimated slippage based on order books.
+1. You can quickly estimate maximum liquidity across markets based on your maxmum tolerable slippage, based on order books.
 
-2. You can quickly scan the market for unusually diverged pairs
+2. You can quickly scan the market for unusually diverged pairs based on settings you choose in settings.py
 
 3. You can run the johansen test on any pairs of perpetual swap contracts
 
