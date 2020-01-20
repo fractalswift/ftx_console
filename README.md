@@ -40,7 +40,7 @@ DOCKER ---
 
 Also available as a docker image here:
 
-    docker pull fractalswift/ftx-console
+    docker pull fractalswift/ftx-console:firsttry
 
 then run:
 
