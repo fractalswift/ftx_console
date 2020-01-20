@@ -35,6 +35,17 @@ To understand the Johansen test results, you can learn about the test here:
 
 https://en.wikipedia.org/wiki/Johansen_test
 
+
+DOCKER --- 
+
+Also available as a docker image here:
+
+    docker pull fractalswift/ftx-console
+
+then run:
+
+    run -i -t  ftx-console
+
 Please be aware of multiple comparisons bias!
 
 
