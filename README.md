@@ -44,7 +44,7 @@ Also available as a docker image here:
 
 then run:
 
-    run -i -t  ftx-console
+    docker run -i -t  ftx-console
 
 Please be aware of multiple comparisons bias!
 
