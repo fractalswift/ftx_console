@@ -12,9 +12,10 @@ class FtxClient:
 
     def __init__(self) -> None:
         self._session = Session()
-        self._api_key =  "no key"  # ADD YOUR OWN API KEY HERE
-        self._api_secret = "no secret" # ADD YOUR OWN API SECRET HERE
-        self._subaccount_name = 'Battle Royale'  # TODO: If using a subaccount, put its name here as a string
+        self._api_key = api_keys.api_key  # ADD YOUR OWN API KEY HERE
+        self._api_secret = api_keys.api_secret  # ADD YOUR OWN API SECRET HERE
+        # TODO: If using a subaccount, put its name here as a string
+        self._subaccount_name = 'Battle Royale'
 
     def _get(self, path: str, params: Optional[Dict[str, Any]] = None) -> Any:
         return self._request('GET', path, params=params)
@@ -34,10 +35,12 @@ class FtxClient:
     def _sign_request(self, request: Request) -> None:
         ts = int(time.time() * 1000)
         prepared = request.prepare()
-        signature_payload = f'{ts}{prepared.method}{prepared.path_url}'.encode()
+        signature_payload = f'{ts}{prepared.method}{prepared.path_url}'.encode(
+        )
         if prepared.body:
             signature_payload += prepared.body
-        signature = hmac.new(self._api_secret.encode(), signature_payload, 'sha256').hexdigest()
+        signature = hmac.new(self._api_secret.encode(),
+                             signature_payload, 'sha256').hexdigest()
         request.headers['FTX-KEY'] = self._api_key
         request.headers['FTX-SIGN'] = signature
         request.headers['FTX-TS'] = str(ts)
@@ -93,16 +96,12 @@ class FtxClient:
 
     def get_deposit_address(self, ticker: str) -> dict:
         return self._get(f'wallet/deposit_address/{ticker}')
-    
+
     def get_hist_futures(self, future_name: str, resolution: str) -> dict:
         return self._get(f'futures/{future_name}/mark_candles?resolution={resolution}')
-    
+
     def get_positions(self) -> dict:
         return self._get(f'positions')
-    
+
     def get_hist_markets(self, market_name: str, resolution: str) -> dict:
         return [market_name, self._get(f'markets/{market_name}/candles?resolution={resolution}')]
-    
-    
-    
-    
