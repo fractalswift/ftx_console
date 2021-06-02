@@ -18,5 +18,5 @@ scipy==1.5.4
 six==1.15.0
 statsmodels==0.12.1
 toml==0.10.2
-urllib3==1.26.2
+urllib3==1.26.5
 wrapt==1.12.1
